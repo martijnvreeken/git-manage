@@ -45,15 +45,21 @@ class Init extends Command
     public function handle()
     {
         $folders = $this->root->readFolders();
-        array_walk($folders, function ($path) {
+        $count = 0;
+        array_walk($folders, function ($path) use (&$count) {
             $name = substr($path, strlen($this->base_path)+1); // +1 to also remove the 'slash'
-            $this->line("found $name and creating the model...");
-            $repo = new Repository();
-            $repo->name = $name;
-            $repo->path = $path;
-            $repo->save();
+            try {
+                $repo = new Repository();
+                $repo->name = $name;
+                $repo->path = $path;
+                $repo->save();
+                $this->line("found $name and created the model...");
+                $count++;
+            } catch(\Exception $error) {
+                \Log::error($error);
+            }
         });
-        $this->info(count($folders) . ' repositories were created');
+        $this->info($count . ' repositories were created');
 
     }
 }
