@@ -30,7 +30,7 @@ class Git {
         $base = config('git-manage.repositories_base_path');
         $folders = $this->fs->directories($base);
         $git_folders = array_filter($folders, function ($folder) {
-            return $this->fs->exists($folder . '/.git');
+            return $this->fs->exists($folder . '/HEAD');
         });
         
         return $git_folders;
